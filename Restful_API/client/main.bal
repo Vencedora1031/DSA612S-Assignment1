@@ -139,3 +139,107 @@ public function deleteProgramme(http:Client http, string prgCode) returns error?
         }
     }
 }
+public function getAllProgrammes(http:Client http) returns error? {
+    if (http is http:Client) {
+        Programme[] prg = check http->/getAllProgrammes;
+        foreach Programme pg in prg {
+            io:println("--------------------------");
+            io:println("Programme Code: ", pg.programmeCode);
+            io:println("Programme Name: ", pg.title);
+            io:println("NQF Level: ", pg.nqfLevel);
+            io:println("Faculty: ", pg.faculty);
+            io:println("Department: ", pg.department);
+            io:println("Courses List: ",pg.courses_taken);
+            io:println("Registered in: ",pg.registrationYear);
+
+          
+        }
+
+        io:println("--------------------------");
+        string exitSys = io:readln("Press 0 to go back");
+
+        if (exitSys == "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back.");
+            }
+        }
+    }
+}
+public function due(http:Client http) returns error? {
+    if (http is http:Client) {
+        Programme[] prg = check http->/dueReview;
+        foreach Programme pg in prg {
+            io:println("--------------------------");
+            io:println("Programme Code: ", pg.programmeCode);
+            io:println("Programme Name: ", pg.title);
+            io:println("NQF Level: ", pg.nqfLevel);
+            io:println("Faculty: ", pg.faculty);
+            io:println("Department: ", pg.department);
+            io:println("Courses List: ",pg.courses_taken);
+            io:println("Registered in: ",pg.registrationYear);
+          
+        }
+
+        io:println("--------------------------");
+        string exitSys = io:readln("Press 0 to go back");
+
+        if (exitSys == "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back.");
+            }
+        }
+    }
+}
+public function getByFaculty(http:Client http, string faculty) returns error? {
+    if (http is http:Client) {
+        Programme[] prg = check http->/faculty(faculty = faculty);
+         foreach Programme pg in prg {
+            io:println("--------------------------");
+            io:println("Programme Code: ", pg.programmeCode);
+            io:println("Programme Name: ", pg.title);
+            io:println("NQF Level: ", pg.nqfLevel);
+            io:println("Faculty: ", pg.faculty);
+            io:println("Department: ", pg.department);
+            io:println("Courses List: ", pg.courses_taken);
+            io:println("Registered in: ",pg.registrationYear);
+        }
+        
+        io:println("--------------------------");
+        string exitSys = io:readln("Press 0 to go back");
+
+        if (exitSys == "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back.");
+            }
+        }
+    }
+}
+
+public function getByCode(http:Client http, string prgCode) returns error? {
+    if (http is http:Client) {
+       Programme pg = check http->/getProgrammeByCode(code = prgCode);
+        io:println("--------------------------");
+            io:println("Programme Code: ", pg.programmeCode);
+            io:println("Programme Name: ", pg.title);
+            io:println("NQF Level: ", pg.nqfLevel);
+            io:println("Faculty: ", pg.faculty);
+            io:println("Department: ", pg.department);
+            io:println("Courses List: ", pg.courses_taken);
+            io:println("Due for Review in: ",pg.registrationYear);
+
+        io:println("--------------------------");
+        string exitSys = io:readln("Press 0 to go back");
+
+        if (exitSys == "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back.");
+            }
+        }
+    }
+    
+}
+
