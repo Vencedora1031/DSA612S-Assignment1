@@ -23,3 +23,15 @@ type Programme readonly & record {
 };
 
 table<Programme> key(programmeCode) programmes = table [];
+service /programmedev on httpListener {
+
+    // Add a new programme
+    resource function post addProgramme(Programme prog) returns string {
+        io:println(prog);
+        error? err = programmes.add(prog);
+        if (err is error) {
+            return string `Error, ${err.message()}`;
+        }
+        return string `${prog.programmeCode} saved successfully`;
+    }
+     }
