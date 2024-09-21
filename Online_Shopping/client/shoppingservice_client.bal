@@ -98,4 +98,21 @@ public function main() returns  error? {
             }
         }
 }
+ // Option 3: Search for a product by SKU
+            "3" => {
+                ProductID productID = {};
+                io:println("_______________________________________");
+                productID.sku = io:readln("Enter SKU to search for the product: ");
+                ProductResponse response = check cli->SearchProduct(productID);
+                io:println(response.message);
+                if (response.product.sku is string) {
+                    io:println("SKU: ", response.product.sku);
+                    io:println("Name: ", response.product.name);
+                    io:println("Description: ", response.product.description);
+                    io:println("Price: ", response.product.price);
+                    io:println("Stock Quantity: ", response.product.stock_quantity);
+                    io:println("Status: ", response.product.status);
+                    io:println("_______________________________________");
+                }
+            }
 }
