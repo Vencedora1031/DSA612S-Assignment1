@@ -1,4 +1,4 @@
-import ballerina/http;
+7import ballerina/http;
 import ballerina/io;
 import ballerina/lang.'string;
 
@@ -59,4 +59,29 @@ service /programmedev on httpListener {
             return "Programme not found for code: " + code;
         }
     }
+//Prgrammes due for review
+    resource function get dueReview() returns table<Programme> key(programmeCode)|string {
+        int currentYear = 2024;
+        table<Programme> key(programmeCode) dueForReviewTable = table []; //  empty table for storing due programmes
+
+        foreach Programme prg in programmes {
+            // Check if the programme is 5 years or older
+            if ((currentYear - prg.registrationYear) >= 5) {
+                // Add the programme to the dueForReviewTable if it's due for review
+                dueForReviewTable.add(prg);
+            }
+        }
+
+        if (dueForReviewTable.length() > 0) {
+            // Return only the programmes that are due for review
+            return dueForReviewTable;
+        }
+
+        // If no programmes are due, return a message
+        else {
+            return "No courses are due for review!";
+        }
+    }
+            
+
 }
