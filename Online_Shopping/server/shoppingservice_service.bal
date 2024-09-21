@@ -92,4 +92,37 @@ service "ShoppingService" on ep{
             return {message: "Product not found"};
         }
     }
+// Customer: Place an order
+
+    remote function PlaceOrder(UserID userID) returns OrderResponse|error {
+        // Retrieve the user's cart, which might be null
+        Cart? cartOpt = carts[userID.id];
+
+        // If the cart is null (user has no cart), return an error
+        if cartOpt is Cart {
+            // Get the current time
+            time:Utc currentTime = time:utcNow();
+
+            // Convert the current time to a string format (e.g., ISO 8601 format)
+            string formattedTime = time:utcToString(currentTime);
+
+            // Create the order response
+            OrderResponse newOrder = {
+                order_id: userID.id + "-" + formattedTime,
+                products: cartOpt.products,
+                total_price: cartOpt.total_price
+            };
+
+            // Save the order
+            orders[newOrder.order_id] = newOrder;
+
+            // Remove the cart after placing the order
+            _ = carts.remove(userID.id);
+
+            // Return the order
+            return newOrder;
+        } else {
+            return error("Cart not found for user ID: " + userID.id);
+        }
+    }
 }
