@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+service ShoppingService {
+    // Admin Functions
+    rpc AddProduct (Product) returns (ProductResponse);
+    rpc UpdateProduct (UpdateProductRequest) returns (ProductResponse);
+    rpc RemoveProduct (ProductID) returns (ProductListResponse);
+    rpc ListOrders (Empty) returns (OrderListResponse);
+    
+    // Customer Functions
+    rpc ListAvailableProducts (Empty) returns (ProductListResponse);
+    rpc SearchProduct (ProductID) returns (ProductResponse);
+    rpc AddToCart (AddToCartRequest) returns (CartResponse);
+    rpc PlaceOrder (UserID) returns (OrderResponse);
+    
+    // Create users (streaming request)
+    rpc CreateUsers (stream User) returns (CreateUsersResponse);
+}
+
+// Messages
+message Product {
+    string name = 1;
+    string description = 2;
+    double price = 3;
+    int32 stock_quantity = 4;
+    string sku = 5;
+    bool status = 6;  // available or out of stock
+}
+
+message UpdateProductRequest {
+    string sku = 1;
+    Product updated_product = 2;
+}
+
+message ProductResponse {
+    string message = 1;
+    Product product = 2;
+}
+
+message ProductID {
+    string sku = 1;
+}
+
+message ProductListResponse {
+    repeated Product products = 1;
+}
+
+message AddToCartRequest {
+    string user_id = 1;
+    string sku = 2;
+}
+
+message CartResponse {
+    string message = 1;
+}
+
+message OrderResponse {
+    string order_id = 1;
+    repeated Product products = 2;
+    double total_price = 3;
+}
+
+message OrderListResponse {
+    repeated OrderResponse orders = 1;
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+    string role = 3; // customer or admin
+}
+
+message UserID {
+    string id = 1;
+}
+
+message CreateUsersResponse {
+    string message = 1;
+}
+
+message Empty {}
