@@ -229,4 +229,13 @@ public function main() returns  error? {
                     io:println("_______________________________________");
                 }
             }
+// Option 5: Add a product to the user's cart
+            "5" => {
+                AddToCartRequest request = {};
+                request.user_id = io:readln("Enter User ID: ");
+                request.sku = io:readln("Enter SKU of the product to add to cart: ");
+                CartResponse response = check cli->AddToCart(request);
+                io:println(response.message);
+            }
+            
             }
