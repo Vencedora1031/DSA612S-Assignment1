@@ -59,7 +59,8 @@ service /programmedev on httpListener {
             return "Programme not found for code: " + code;
         }
     }
-//Prgrammes due for review
+
+    //Prgrammes due for review
     resource function get dueReview() returns table<Programme> key(programmeCode)|string {
         int currentYear = 2024;
         table<Programme> key(programmeCode) dueForReviewTable = table []; //  empty table for storing due programmes
@@ -82,7 +83,8 @@ service /programmedev on httpListener {
             return "No courses are due for review!";
         }
     }
-     //Retrieve all the programmes that belong to the same faculty
+
+    //Retrieve all the programmes that belong to the same faculty
     resource function get faculty(string faculty) returns table<Programme> key(programmeCode)|string {
         //  Empty table for storing programmes in the same faculty
         table<Programme> key(programmeCode) sameFaculty = table [];
@@ -102,8 +104,9 @@ service /programmedev on httpListener {
             // If no programmes are found in the faculty, return an error message
             return "Faculty " + faculty + " does not exist!!";
         }
-    }       
-// Update an existing programme's information according to the programme code.
+    }
+
+    // Update an existing programme's information according to the programme code.
 
     resource function put updateProgramme(Programme prg) returns string {
         boolean isProgrammeFound = false;
@@ -128,6 +131,28 @@ service /programmedev on httpListener {
 
         else {
             return string `${prg.programmeCode} updated successfully.`;
+        }
+    }
+
+    // Delete a programme's record
+    resource function delete deleteProgramme(string programmeCode) returns string {
+        // A flag to check if the programme exists
+        boolean isProgrammeFound = false;
+
+        foreach Programme prg in programmes {
+            // Use string:equalsIgnoreCase() to compare programme codes, ignoring case
+            if (string:equalsIgnoreCaseAscii(prg.programmeCode, programmeCode)) {
+                // Remove the programme if found
+                _ = programmes.remove(prg.programmeCode);
+                isProgrammeFound = true; // Set the flag to true as the programme was found
+                break; // Exit the loop since the programme is found and deleted
+            }
+        }
+
+        if (isProgrammeFound) {
+            return "The programme " + programmeCode + " has been deleted.";
+        } else {
+            return "Programme not found for code: " + programmeCode;
         }
     }
 }
