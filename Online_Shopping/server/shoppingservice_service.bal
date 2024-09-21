@@ -125,4 +125,18 @@ service "ShoppingService" on ep{
             return error("Cart not found for user ID: " + userID.id);
         }
     }
+// Stream multiple users (customers and admins) and return response once complete
+  remote function CreateUsers(stream<User, error?> userStream) returns CreateUsersResponse {
+    // Handle any errors that might occur during the forEach operation
+    error? e = userStream.forEach(function(User user) {
+        users[user.id] = user;
+    });
+
+    // Check if there was an error and handle it
+    if (e is error) {
+        return {message: "Failed to create users: " + e.message()};
+    }
+
+    return {message: "Users created successfully"};
+}
 }
