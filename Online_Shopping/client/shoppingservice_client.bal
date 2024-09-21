@@ -172,4 +172,61 @@ public function main() returns  error? {
                     io:println("Status: ", response.product.status);
                     io:println("_______________________________________");
                 }
+// Option 6: Remove a product by its SKU
+            "6" => {
+                // Create a 'ProductID' record to identify the product to remove
+                ProductID productID = {};
+                productID.sku = io:readln("Enter SKU of the product to be removed: ");
+
+                // Call the 'RemoveProduct' method on the client and pass the product ID
+                ProductListResponse response = check cli->RemoveProduct(productID);
+                io:println("_______________________________________");
+
+                // Display the remaining products after removal
+                io:println("Remaining products:");
+                foreach Product product in response.products {
+                    io:println("SKU: ", product.sku);
+                    io:println("Name: ", product.name);
+                    io:println("Description: ", product.description);
+                    io:println("Price: ", product.price);
+                    io:println("Stock Quantity: ", product.stock_quantity);
+                    io:println("Status: ", product.status);
+                    io:println("_______________________________________");
+                }
+            }
+            // Option 2: List all available products
+            "2" => {
+                // Call the 'ListAvailableProducts' method to retrieve available products
+                ProductListResponse response = check cli->ListAvailableProducts({});
+
+                // Display the details of each available product
+                io:println("_______________________________________");
+                io:println("Available products:");
+                foreach Product product in response.products {
+                    io:println("SKU: ", product.sku);
+                    io:println("Name: ", product.name);
+                    io:println("Description: ", product.description);
+                    io:println("Price: ", product.price);
+                    io:println("Stock Quantity: ", product.stock_quantity);
+                    io:println("Status: ", product.status);
+                    io:println("_______________________________________");
+                }
+            }
+            // Option 3: Search for a product by SKU
+            "3" => {
+                ProductID productID = {};
+                io:println("_______________________________________");
+                productID.sku = io:readln("Enter SKU to search for the product: ");
+                ProductResponse response = check cli->SearchProduct(productID);
+                io:println(response.message);
+                if (response.product.sku is string) {
+                    io:println("SKU: ", response.product.sku);
+                    io:println("Name: ", response.product.name);
+                    io:println("Description: ", response.product.description);
+                    io:println("Price: ", response.product.price);
+                    io:println("Stock Quantity: ", response.product.stock_quantity);
+                    io:println("Status: ", response.product.status);
+                    io:println("_______________________________________");
+                }
+            }
             }
