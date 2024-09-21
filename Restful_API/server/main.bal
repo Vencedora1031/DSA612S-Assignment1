@@ -103,5 +103,31 @@ service /programmedev on httpListener {
             return "Faculty " + faculty + " does not exist!!";
         }
     }       
+// Update an existing programme's information according to the programme code.
 
+    resource function put updateProgramme(Programme prg) returns string {
+        boolean isProgrammeFound = false;
+
+        // Check if the programme with the given programmeCode exists
+        foreach Programme existingPrg in programmes {
+            if (string:equalsIgnoreCaseAscii(existingPrg.programmeCode, prg.programmeCode)) {
+                // If found, update the programme details
+                _ = programmes.remove(existingPrg.programmeCode); // Remove the existing record
+                error? err = programmes.put(prg); // Add the updated programme
+                if (err is error) {
+                    return string `Error, ${err.message()}`;
+                }
+                isProgrammeFound = true;
+                break; // Exit loop after updating the programme
+            }
+        }
+
+        if (!isProgrammeFound) {
+            return "Programme not found for update.";
+        }
+
+        else {
+            return string `${prg.programmeCode} updated successfully.`;
+        }
+    }
 }
