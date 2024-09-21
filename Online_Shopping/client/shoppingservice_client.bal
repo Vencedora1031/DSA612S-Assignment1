@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import ballerina/io;
 
 // Declare a client for communicating with the gRPC service.
@@ -7,8 +5,8 @@ import ballerina/io;
 // 'check' ensures that any potential errors are handled.
 ShoppingServiceClient cli = check new ("http://localhost:9090");
 
-public function main() returns  error? {
-     // Infinite loop to keep displaying the menu options
+public function main() returns error? {
+    // Infinite loop to keep displaying the menu options
     while true {
         // Display a list of options for the user to choose from
         io:println("_______________________________________");
@@ -27,8 +25,9 @@ public function main() returns  error? {
         string selection = io:readln("Choose an option (0-9): ");
         io:println("_______________________________________");
 
-        match selection{
- "1" => {
+        // 'match' block to handle the user's selection based on the entered option
+        match selection {
+            "1" => {
                 // Create an empty 'Product' record to store product information
                 Product prd = {};
 
@@ -98,83 +97,7 @@ public function main() returns  error? {
                 io:println(response.message);
                 io:println("_______________________________________");
             }
-        }
-}
- // Option 3: Search for a product by SKU
-            "3" => {
-                ProductID productID = {};
-                io:println("_______________________________________");
-                productID.sku = io:readln("Enter SKU to search for the product: ");
-                ProductResponse response = check cli->SearchProduct(productID);
-                io:println(response.message);
-                if (response.product.sku is string) {
-                    io:println("SKU: ", response.product.sku);
-                    io:println("Name: ", response.product.name);
-                    io:println("Description: ", response.product.description);
-                    io:println("Price: ", response.product.price);
-                    io:println("Stock Quantity: ", response.product.stock_quantity);
-                    io:println("Status: ", response.product.status);
-                    io:println("_______________________________________");
-                }
-            }
-}
-// Option 6: Remove a product by its SKU
-            "6" => {
-                // Create a 'ProductID' record to identify the product to remove
-                ProductID productID = {};
-                productID.sku = io:readln("Enter SKU of the product to be removed: ");
-
-                // Call the 'RemoveProduct' method on the client and pass the product ID
-                ProductListResponse response = check cli->RemoveProduct(productID);
-                io:println("_______________________________________");
-
-                // Display the remaining products after removal
-                io:println("Remaining products:");
-                foreach Product product in response.products {
-                    io:println("SKU: ", product.sku);
-                    io:println("Name: ", product.name);
-                    io:println("Description: ", product.description);
-                    io:println("Price: ", product.price);
-                    io:println("Stock Quantity: ", product.stock_quantity);
-                    io:println("Status: ", product.status);
-                    io:println("_______________________________________");
-                }
-            }
-            // Option 2: List all available products
-            "2" => {
-                // Call the 'ListAvailableProducts' method to retrieve available products
-                ProductListResponse response = check cli->ListAvailableProducts({});
-
-                // Display the details of each available product
-                io:println("_______________________________________");
-                io:println("Available products:");
-                foreach Product product in response.products {
-                    io:println("SKU: ", product.sku);
-                    io:println("Name: ", product.name);
-                    io:println("Description: ", product.description);
-                    io:println("Price: ", product.price);
-                    io:println("Stock Quantity: ", product.stock_quantity);
-                    io:println("Status: ", product.status);
-                    io:println("_______________________________________");
-                }
-            }
-            // Option 3: Search for a product by SKU
-            "3" => {
-                ProductID productID = {};
-                io:println("_______________________________________");
-                productID.sku = io:readln("Enter SKU to search for the product: ");
-                ProductResponse response = check cli->SearchProduct(productID);
-                io:println(response.message);
-                if (response.product.sku is string) {
-                    io:println("SKU: ", response.product.sku);
-                    io:println("Name: ", response.product.name);
-                    io:println("Description: ", response.product.description);
-                    io:println("Price: ", response.product.price);
-                    io:println("Stock Quantity: ", response.product.stock_quantity);
-                    io:println("Status: ", response.product.status);
-                    io:println("_______________________________________");
-                }
-// Option 6: Remove a product by its SKU
+            // Option 6: Remove a product by its SKU
             "6" => {
                 // Create a 'ProductID' record to identify the product to remove
                 ProductID productID = {};
@@ -231,7 +154,7 @@ public function main() returns  error? {
                     io:println("_______________________________________");
                 }
             }
-// Option 5: Add a product to the user's cart
+            // Option 5: Add a product to the user's cart
             "5" => {
                 AddToCartRequest request = {};
                 request.user_id = io:readln("Enter User ID: ");
@@ -239,6 +162,83 @@ public function main() returns  error? {
                 CartResponse response = check cli->AddToCart(request);
                 io:println(response.message);
             }
-            
+            // Option 8: Place an order for a user
+            "8" => {
+
+                // Get the user ID and place the order
+                UserID userID = {};
+                io:println("_______________________________________");
+                // Display order details such as ID, total price, and products
+                userID.id = io:readln("Enter User ID to place the order: ");
+                OrderResponse response = check cli->PlaceOrder(userID);
+                io:println("Order ID: ", response.order_id);
+                io:println("Total Price: ", response.total_price);
+                io:println("Products:");
+                foreach Product product in response.products {
+                    io:println("SKU: ", product.sku);
+                    io:println("Name: ", product.name);
+                    io:println("Description: ", product.description);
+                    io:println("Price: ", product.price);
+                    io:println("Stock Quantity: ", product.stock_quantity);
+                    io:println("Status: ", product.status);
+                    io:println("_______________________________________");
+                }
             }
->>>>>>> 2a23a2dcc4c4308f348bacc6888cc03b32f8bbc6
+            // Option 9: List all orders placed
+            "9" => {
+                // Call 'ListOrders' to retrieve all orders
+                OrderListResponse response = check cli->ListOrders({});
+                io:println("_______________________________________");
+                // Display each order's details
+                io:println("Orders:");
+                foreach OrderResponse newOrder in response.orders {
+                    io:println("Order ID: ", newOrder.order_id);
+                    io:println("Total Price: ", newOrder.total_price);
+                    io:println("Products:");
+                    foreach Product product in newOrder.products {
+                        io:println("SKU: ", product.sku);
+                        io:println("Name: ", product.name);
+                        io:println("Description: ", product.description);
+                        io:println("Price: ", product.price);
+                        io:println("Stock Quantity: ", product.stock_quantity);
+                        io:println("Status: ", product.status);
+                    }
+                    io:println("_______________________________________");
+                }
+            }
+            "7" => {
+                io:println("_______________________________________");
+                io:println("Enter user details (one per line):");
+                string id = io:readln("User ID: ");
+                string name = io:readln("User Name: ");
+                string role = io:readln("User Role: "); // Assuming role is also required
+
+                User user = {id: id, name: name, role: role}; // Create User object with all required fields
+
+                // Initialize the streaming client
+                CreateUsersStreamingClient createUsersStreamingClient = check cli->CreateUsers();
+
+                // Send the User object
+                check createUsersStreamingClient->sendUser(user);
+
+                // Complete the streaming request
+                check createUsersStreamingClient->complete();
+
+                // Receive the response
+                CreateUsersResponse? createUsersResponse = check createUsersStreamingClient->receiveCreateUsersResponse();
+
+                // Print the response message
+                io:println(createUsersResponse);
+                io:println("_______________________________________");
+            }
+            "0" => {
+                io:println("Exiting the program.");
+                return; // Exit the main function
+            }
+            _ => {
+                io:println("Invalid option. Please choose a number between 0 and 9.");
+            }
+        }
+    }
+
+}
