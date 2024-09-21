@@ -34,4 +34,16 @@ service "ShoppingService" on ep{
             return {message: "Product not found", product: {}};
         }
     }
+// Admin: Remove a product
+    remote function RemoveProduct(ProductID productID) returns ProductListResponse {
+        if products.hasKey(productID.sku) {
+            _ = products.remove(productID.sku);
+        }
+        return {products: products.toArray()};
+    }
+
+    // Admin: List orders
+    remote function ListOrders(Empty empty) returns OrderListResponse {
+        return {orders: orders.toArray()};
+    }
 }
