@@ -41,4 +41,20 @@ service /programmedev on httpListener {
 
         return programmes;
     }
+    // A flag to check if the programme with the code exists
+        boolean isCodeFound = false;
+        foreach Programme prg in programmes {
+            if (string:equalsIgnoreCaseAscii(prg.programmeCode, code)) {
+                isCodeFound = true;
+                return prg;
+
+            }
+        }
+
+        if (isCodeFound) {
+            return "The programme " + code + " has been found.";
+        } else {
+            return "Programme not found for code: " + code;
+        }
+    }
 }
