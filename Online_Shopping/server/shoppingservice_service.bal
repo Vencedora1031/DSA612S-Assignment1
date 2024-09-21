@@ -46,4 +46,23 @@ service "ShoppingService" on ep{
     remote function ListOrders(Empty empty) returns OrderListResponse {
         return {orders: orders.toArray()};
     }
+// Customer: List available products
+    remote function ListAvailableProducts(Empty empty) returns ProductListResponse {
+        Product[] availableProducts = [];
+        foreach var [_, product] in products.entries() {
+            if product.status == true {
+                availableProducts.push(product);
+            }
+        }
+        return {products: availableProducts};
+    }
+
+    // Customer: Search product by SKU
+    remote function SearchProduct(ProductID productID) returns ProductResponse {
+        if products.hasKey(productID.sku) {
+            return {message: "Product found", product: products[productID.sku] ?: {}};
+        } else {
+            return {message: "Product not found", product: {}};
+        }
+    }
 }
