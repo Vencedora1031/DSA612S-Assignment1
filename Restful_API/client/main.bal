@@ -79,3 +79,33 @@ public function main() returns  error?{
         }
     }
 }
+public function addCourses() returns string[] {
+    string[] courses = [];
+    boolean addMoreCourses = true;
+    
+    while addMoreCourses {
+        string courseName = io:readln("Enter Courses Under Programme: ");
+        courses.push(courseName);
+        
+        string userInput = io:readln("Do you want to add another course? (yes/no): ");
+        if userInput.toLowerAscii() != "yes" {
+            addMoreCourses = false;
+        }
+    }
+    
+    return courses;
+}
+public function addProgramme(http:Client http, Programme prg) returns error? {
+    if (http is http:Client) {
+        string resp = check http->/addProgramme.post(prg);
+        io:println(resp);
+        string exitSys = io:readln("Press 0 to go back");
+
+        if (exitSys === "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back to options page.");
+            }
+        }
+    }
+}
