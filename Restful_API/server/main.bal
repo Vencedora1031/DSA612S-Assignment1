@@ -1,4 +1,4 @@
-7import ballerina/http;
+import ballerina/http;
 import ballerina/io;
 import ballerina/lang.'string;
 
@@ -82,6 +82,26 @@ service /programmedev on httpListener {
             return "No courses are due for review!";
         }
     }
-            
+     //Retrieve all the programmes that belong to the same faculty
+    resource function get faculty(string faculty) returns table<Programme> key(programmeCode)|string {
+        //  Empty table for storing programmes in the same faculty
+        table<Programme> key(programmeCode) sameFaculty = table [];
+
+        // Iterate through all programmes
+        foreach Programme prg in programmes {
+            if (string:equalsIgnoreCaseAscii(prg.faculty, faculty)) {
+                // Add programme to sameFaculty table if it matches the given faculty
+                sameFaculty.add(prg);
+            }
+        }
+
+        // If programmes are found in the faculty, return them
+        if (sameFaculty.length() > 0) {
+            return sameFaculty;
+        } else {
+            // If no programmes are found in the faculty, return an error message
+            return "Faculty " + faculty + " does not exist!!";
+        }
+    }       
 
 }
