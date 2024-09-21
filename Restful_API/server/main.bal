@@ -23,6 +23,7 @@ type Programme readonly & record {
 };
 
 table<Programme> key(programmeCode) programmes = table [];
+
 service /programmedev on httpListener {
 
     // Add a new programme
@@ -34,4 +35,10 @@ service /programmedev on httpListener {
         }
         return string `${prog.programmeCode} saved successfully`;
     }
-     }
+
+    // Retrieve a list of all programme within the Programme Development Unit.
+    resource function get getAllProgrammes() returns table<Programme> key(programmeCode) {
+
+        return programmes;
+    }
+}
