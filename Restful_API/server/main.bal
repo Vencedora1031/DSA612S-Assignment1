@@ -41,7 +41,9 @@ service /programmedev on httpListener {
 
         return programmes;
     }
-    // A flag to check if the programme with the code exists
+
+    resource function get getProgrammeByCode(string code) returns Programme|string {
+        // A flag to check if the programme with the code exists
         boolean isCodeFound = false;
         foreach Programme prg in programmes {
             if (string:equalsIgnoreCaseAscii(prg.programmeCode, code)) {
