@@ -109,3 +109,33 @@ public function addProgramme(http:Client http, Programme prg) returns error? {
         }
     }
 }
+public function updateProgramme(http:Client http, Programme updt) returns error? {
+    
+     if (http is http:Client) {
+        string resp = check http->/updateProgramme.put(updt);
+        io:println(resp);
+        string exitSys = io:readln("Press 0 to go back");
+
+        if (exitSys === "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back to options page.");
+            }
+        }
+    }
+    io:println(updt);
+}
+public function deleteProgramme(http:Client http, string prgCode) returns error? {
+    if (http is http:Client) {
+        string message = check http->/deleteProgramme.delete(programmeCode=prgCode);
+        io:println(message);
+        io:println("--------------------------");
+        string exitSys = io:readln("Press 0 to go back");
+        if (exitSys == "0") {
+            error? rerun = main();
+            if rerun is error {
+                io:println("Error, You can't go back.");
+            }
+        }
+    }
+}
